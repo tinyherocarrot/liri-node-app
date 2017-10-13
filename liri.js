@@ -50,7 +50,6 @@ switch (cmd) {
 
 
 	// show the following information about the song in your terminal/bash window: Artist(s), The song name, A preview link of the song from Spotify, The album that the song is from
-	// If no song is provided then your program will default to "The Sign" by Ace of Base
 	case "spotify-this-song": 
 
 		// initialize Spotify pkg
@@ -61,16 +60,29 @@ switch (cmd) {
 		  secret: keys.spotifyKeys.secret
 		});
 
-		var songName = process.argv[3].trim();
-		// console.log(songName);
+		var argInput = process.argv
+		var songName = "";
+		
+		for (var i=3; i<argInput.length; i++) {
+			songName += " " + argInput[i]
+		}
+	
+	// If no song is provided then your program will default to "The Sign" by Ace of Base
+		if (songName === "") {
+			songName = "The Sign";
+		}
+		console.log("You searched for: " + songName);
+
 		spotify.search({ type: 'track', query: songName }, function(err, data) {
 		  if (err) {
 		    return console.log('Error occurred: ' + err);
 		  }
 		 
+		// console.log(data.tracks)
 		console.log("Artist: " + JSON.stringify(data.tracks.items[0].artists[0]["name"]));
-		console.log(data.tracks)
 		console.log("Song: " + JSON.stringify(data.tracks.items[0].name));
+		console.log("Preview this Song: " + JSON.stringify(data.tracks.items[0].preview_url));
+		console.log("Album: " + JSON.stringify(data.tracks.items[0].album["name"]));
 
 
 		});
